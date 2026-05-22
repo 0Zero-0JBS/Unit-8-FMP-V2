@@ -128,7 +128,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9891947}
-  - component: {fileID: 9891946}
+  - component: {fileID: 9891948}
   - component: {fileID: 9891945}
   m_Layer: 0
   m_Name: Audio Manager
@@ -152,7 +152,7 @@ AudioSource:
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
-  Loop: 1
+  Loop: 0
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
@@ -234,7 +234,22 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &9891946
+--- !u!4 &9891947
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9891944}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 965.848, y: 540.0095, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &9891948
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -258,27 +273,11 @@ MonoBehaviour:
   playerDeathSound: {fileID: 8300000, guid: fa36074c4aa031841ba0e658ee2c3716, type: 3}
   mainMenuMusic: {fileID: 8300000, guid: 3f49343f4e72533439cf5ecc12c49e7a, type: 3}
   battleMusic: {fileID: 8300000, guid: 9b6fb3a34fc78a14990cd94ed0f91d31, type: 3}
-  buttonHover: {fileID: 0}
   buttonClick: {fileID: 8300000, guid: df85819a08d4343458eaa328c4531117, type: 3}
   scorePointSound: {fileID: 8300000, guid: fa4319f1c0ece2e4197fc62312d60fc1, type: 3}
   globalSfxVolume: 0.8
   globalMusicVolume: 0.5
-  dynamicMusicSpeedScaling: 1
---- !u!4 &9891947
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9891944}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 965.848, y: 540.0095, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  dynamicMusicSpeedScaling: 0
 --- !u!1 &23861471
 GameObject:
   m_ObjectHideFlags: 0
@@ -544,7 +543,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ButtonScript
   audioSource: {fileID: 9891945}
-  hoverSound: {fileID: 0}
   clickSound: {fileID: 8300000, guid: df85819a08d4343458eaa328c4531117, type: 3}
   loopHoverSound: 1
   isFirstSelectedButton: 0
@@ -595,6 +593,18 @@ MonoBehaviour:
       - m_Target: {fileID: 908690716}
         m_TargetAssemblyTypeName: GameManagerScript, Assembly-CSharp
         m_MethodName: OpenQuitConfirmation
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 52645986}
+        m_TargetAssemblyTypeName: ButtonScript, Assembly-CSharp
+        m_MethodName: PlayClickSound
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -907,7 +917,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ButtonScript
   audioSource: {fileID: 9891945}
-  hoverSound: {fileID: 0}
   clickSound: {fileID: 8300000, guid: df85819a08d4343458eaa328c4531117, type: 3}
   loopHoverSound: 1
   isFirstSelectedButton: 0
@@ -958,6 +967,18 @@ MonoBehaviour:
       - m_Target: {fileID: 908690716}
         m_TargetAssemblyTypeName: GameManagerScript, Assembly-CSharp
         m_MethodName: QuitGame
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 231355354}
+        m_TargetAssemblyTypeName: ButtonScript, Assembly-CSharp
+        m_MethodName: PlayClickSound
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1332,7 +1353,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ButtonScript
   audioSource: {fileID: 9891945}
-  hoverSound: {fileID: 0}
   clickSound: {fileID: 8300000, guid: df85819a08d4343458eaa328c4531117, type: 3}
   loopHoverSound: 1
   isFirstSelectedButton: 0
@@ -1383,6 +1403,18 @@ MonoBehaviour:
       - m_Target: {fileID: 908690716}
         m_TargetAssemblyTypeName: GameManagerScript, Assembly-CSharp
         m_MethodName: CloseQuitConfirmation
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 320842421}
+        m_TargetAssemblyTypeName: ButtonScript, Assembly-CSharp
+        m_MethodName: PlayClickSound
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1483,7 +1515,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ButtonScript
   audioSource: {fileID: 9891945}
-  hoverSound: {fileID: 0}
   clickSound: {fileID: 8300000, guid: df85819a08d4343458eaa328c4531117, type: 3}
   loopHoverSound: 1
   isFirstSelectedButton: 0
@@ -2164,7 +2195,7 @@ AudioSource:
   m_GameObject: {fileID: 491664308}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 8878246156066804377, guid: d3b6415d484053f46a5d3a1d57e9e10d, type: 2}
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: 326bd7f080783e84ab66c0c068abef96, type: 3}
   m_PlayOnAwake: 0
@@ -2770,7 +2801,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ButtonScript
   audioSource: {fileID: 9891945}
-  hoverSound: {fileID: 0}
   clickSound: {fileID: 8300000, guid: df85819a08d4343458eaa328c4531117, type: 3}
   loopHoverSound: 1
   isFirstSelectedButton: 0
@@ -2821,6 +2851,18 @@ MonoBehaviour:
       - m_Target: {fileID: 908690716}
         m_TargetAssemblyTypeName: GameManagerScript, Assembly-CSharp
         m_MethodName: OpenReturnToMenuPanel
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 719222633}
+        m_TargetAssemblyTypeName: ButtonScript, Assembly-CSharp
+        m_MethodName: PlayClickSound
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2921,7 +2963,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ButtonScript
   audioSource: {fileID: 9891945}
-  hoverSound: {fileID: 0}
   clickSound: {fileID: 8300000, guid: df85819a08d4343458eaa328c4531117, type: 3}
   loopHoverSound: 1
   isFirstSelectedButton: 0
@@ -2972,6 +3013,18 @@ MonoBehaviour:
       - m_Target: {fileID: 908690716}
         m_TargetAssemblyTypeName: GameManagerScript, Assembly-CSharp
         m_MethodName: CloseReturnToMenuPanel
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 765226308}
+        m_TargetAssemblyTypeName: ButtonScript, Assembly-CSharp
+        m_MethodName: PlayClickSound
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3548,7 +3601,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ButtonScript
   audioSource: {fileID: 9891945}
-  hoverSound: {fileID: 0}
   clickSound: {fileID: 8300000, guid: df85819a08d4343458eaa328c4531117, type: 3}
   loopHoverSound: 1
   isFirstSelectedButton: 0
@@ -3599,6 +3651,18 @@ MonoBehaviour:
       - m_Target: {fileID: 908690716}
         m_TargetAssemblyTypeName: GameManagerScript, Assembly-CSharp
         m_MethodName: OpenReturnToMenuPanel
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 850604184}
+        m_TargetAssemblyTypeName: ButtonScript, Assembly-CSharp
+        m_MethodName: PlayClickSound
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3936,7 +4000,7 @@ MonoBehaviour:
   audioMixer: {fileID: 24100000, guid: d3b6415d484053f46a5d3a1d57e9e10d, type: 2}
   musicSlider: {fileID: 1877188077}
   sfxSlider: {fileID: 1753739495}
-  settingsBackButton: {fileID: 0}
+  settingsBackButton: {fileID: 1850345512}
 --- !u!1 &925423336
 GameObject:
   m_ObjectHideFlags: 0
@@ -5308,7 +5372,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ButtonScript
   audioSource: {fileID: 9891945}
-  hoverSound: {fileID: 0}
   clickSound: {fileID: 8300000, guid: df85819a08d4343458eaa328c4531117, type: 3}
   loopHoverSound: 1
   isFirstSelectedButton: 0
@@ -5471,7 +5534,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ButtonScript
   audioSource: {fileID: 9891945}
-  hoverSound: {fileID: 0}
   clickSound: {fileID: 8300000, guid: df85819a08d4343458eaa328c4531117, type: 3}
   loopHoverSound: 1
   isFirstSelectedButton: 0
@@ -5717,7 +5779,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ButtonScript
   audioSource: {fileID: 9891945}
-  hoverSound: {fileID: 0}
   clickSound: {fileID: 8300000, guid: df85819a08d4343458eaa328c4531117, type: 3}
   loopHoverSound: 1
   isFirstSelectedButton: 0
@@ -5768,6 +5829,18 @@ MonoBehaviour:
       - m_Target: {fileID: 908690716}
         m_TargetAssemblyTypeName: GameManagerScript, Assembly-CSharp
         m_MethodName: OpenSettings
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1513175433}
+        m_TargetAssemblyTypeName: ButtonScript, Assembly-CSharp
+        m_MethodName: PlayClickSound
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -5868,7 +5941,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ButtonScript
   audioSource: {fileID: 9891945}
-  hoverSound: {fileID: 0}
   clickSound: {fileID: 8300000, guid: df85819a08d4343458eaa328c4531117, type: 3}
   loopHoverSound: 1
   isFirstSelectedButton: 0
@@ -5919,6 +5991,18 @@ MonoBehaviour:
       - m_Target: {fileID: 908690716}
         m_TargetAssemblyTypeName: GameManagerScript, Assembly-CSharp
         m_MethodName: QuitToMainMenu
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1564881046}
+        m_TargetAssemblyTypeName: ButtonScript, Assembly-CSharp
+        m_MethodName: PlayClickSound
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -6713,7 +6797,7 @@ MonoBehaviour:
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.5294118, g: 0.5294118, b: 0.5294118, a: 1}
-    m_PressedColor: {r: 0.4509804, g: 0.4509804, b: 0.4509804, a: 1}
+    m_PressedColor: {r: 0.47058824, g: 0.47058824, b: 0.47058824, a: 1}
     m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
@@ -7328,7 +7412,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ButtonScript
   audioSource: {fileID: 9891945}
-  hoverSound: {fileID: 0}
   clickSound: {fileID: 8300000, guid: df85819a08d4343458eaa328c4531117, type: 3}
   loopHoverSound: 1
   isFirstSelectedButton: 0
@@ -7379,6 +7462,18 @@ MonoBehaviour:
       - m_Target: {fileID: 908690716}
         m_TargetAssemblyTypeName: GameManagerScript, Assembly-CSharp
         m_MethodName: OpenQuitConfirmation
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1833212078}
+        m_TargetAssemblyTypeName: ButtonScript, Assembly-CSharp
+        m_MethodName: PlayClickSound
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -7691,7 +7786,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ButtonScript
   audioSource: {fileID: 9891945}
-  hoverSound: {fileID: 0}
   clickSound: {fileID: 8300000, guid: df85819a08d4343458eaa328c4531117, type: 3}
   loopHoverSound: 1
   isFirstSelectedButton: 0
@@ -7742,6 +7836,18 @@ MonoBehaviour:
       - m_Target: {fileID: 908690716}
         m_TargetAssemblyTypeName: GameManagerScript, Assembly-CSharp
         m_MethodName: CloseSettings
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1850345511}
+        m_TargetAssemblyTypeName: ButtonScript, Assembly-CSharp
+        m_MethodName: PlayClickSound
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -8127,7 +8233,7 @@ MonoBehaviour:
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.5294118, g: 0.5294118, b: 0.5294118, a: 1}
-    m_PressedColor: {r: 0.4509804, g: 0.4509804, b: 0.4509804, a: 1}
+    m_PressedColor: {r: 0.47058824, g: 0.47058824, b: 0.47058824, a: 1}
     m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
@@ -8554,135 +8660,6 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
---- !u!1 &1981039012
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1981039014}
-  - component: {fileID: 1981039013}
-  m_Layer: 0
-  m_Name: Background Music
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!82 &1981039013
-AudioSource:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1981039012}
-  m_Enabled: 1
-  serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: -3546210606334168608, guid: d3b6415d484053f46a5d3a1d57e9e10d, type: 2}
-  m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 8300000, guid: 9b6fb3a34fc78a14990cd94ed0f91d31, type: 3}
-  m_PlayOnAwake: 1
-  m_Volume: 1
-  m_Pitch: 1
-  Loop: 1
-  Mute: 0
-  Spatialize: 0
-  SpatializePostEffects: 0
-  Priority: 128
-  DopplerLevel: 1
-  MinDistance: 1
-  MaxDistance: 500
-  Pan2D: 0
-  rolloffMode: 0
-  BypassEffects: 0
-  BypassListenerEffects: 0
-  BypassReverbZones: 0
-  rolloffCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 1
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  panLevelCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  spreadCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  reverbZoneMixCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
---- !u!4 &1981039014
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1981039012}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 657.29, y: 543.5252, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2037421263
 GameObject:
   m_ObjectHideFlags: 0
@@ -9122,7 +9099,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ButtonScript
   audioSource: {fileID: 9891945}
-  hoverSound: {fileID: 0}
   clickSound: {fileID: 8300000, guid: df85819a08d4343458eaa328c4531117, type: 3}
   loopHoverSound: 1
   isFirstSelectedButton: 0
@@ -9173,6 +9149,18 @@ MonoBehaviour:
       - m_Target: {fileID: 908690716}
         m_TargetAssemblyTypeName: GameManagerScript, Assembly-CSharp
         m_MethodName: RestartLevel
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 2137037832}
+        m_TargetAssemblyTypeName: ButtonScript, Assembly-CSharp
+        m_MethodName: PlayClickSound
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -9439,7 +9427,6 @@ SceneRoots:
   - {fileID: 1935343734}
   - {fileID: 908690717}
   - {fileID: 9891947}
-  - {fileID: 1981039014}
   - {fileID: 1590885503}
   - {fileID: 830472711}
   - {fileID: 925423340}

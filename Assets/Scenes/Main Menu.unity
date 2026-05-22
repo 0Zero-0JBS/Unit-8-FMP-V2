@@ -545,8 +545,8 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.5882353, g: 0.5882353, b: 0.5882353, a: 1}
-    m_PressedColor: {r: 0.5294118, g: 0.5294118, b: 0.5294118, a: 1}
+    m_HighlightedColor: {r: 0.5294118, g: 0.5294118, b: 0.5294118, a: 1}
+    m_PressedColor: {r: 0.47058824, g: 0.47058824, b: 0.47058824, a: 1}
     m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
@@ -753,7 +753,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ButtonScript
   audioSource: {fileID: 1308383190}
-  hoverSound: {fileID: 0}
   clickSound: {fileID: 8300000, guid: df85819a08d4343458eaa328c4531117, type: 3}
   loopHoverSound: 1
   isFirstSelectedButton: 0
@@ -1190,7 +1189,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ButtonScript
   audioSource: {fileID: 1308383190}
-  hoverSound: {fileID: 0}
   clickSound: {fileID: 8300000, guid: df85819a08d4343458eaa328c4531117, type: 3}
   loopHoverSound: 1
   isFirstSelectedButton: 0
@@ -2043,7 +2041,7 @@ MonoBehaviour:
   m_XRTrackingOrigin: {fileID: 0}
   m_ActionsAsset: {fileID: -944628639613478452, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
   m_PointAction: {fileID: -1654692200621890270, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
-  m_MoveAction: {fileID: 3346966206199567925, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_MoveAction: {fileID: -8784545083839296357, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
   m_SubmitAction: {fileID: 392368643174621059, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
   m_CancelAction: {fileID: 7727032971491509709, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
   m_LeftClickAction: {fileID: 3001919216989983466, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
@@ -2393,7 +2391,7 @@ MonoBehaviour:
   audioMixer: {fileID: 24100000, guid: d3b6415d484053f46a5d3a1d57e9e10d, type: 2}
   musicSlider: {fileID: 1631995394}
   sfxSlider: {fileID: 366391907}
-  settingsBackButton: {fileID: 0}
+  settingsBackButton: {fileID: 550482180}
 --- !u!114 &776890352
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2905,7 +2903,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ButtonScript
   audioSource: {fileID: 1308383190}
-  hoverSound: {fileID: 0}
   clickSound: {fileID: 8300000, guid: df85819a08d4343458eaa328c4531117, type: 3}
   loopHoverSound: 1
   isFirstSelectedButton: 0
@@ -3146,7 +3143,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ButtonScript
   audioSource: {fileID: 1308383190}
-  hoverSound: {fileID: 0}
   clickSound: {fileID: 8300000, guid: df85819a08d4343458eaa328c4531117, type: 3}
   loopHoverSound: 1
   isFirstSelectedButton: 0
@@ -3309,7 +3305,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ButtonScript
   audioSource: {fileID: 1308383190}
-  hoverSound: {fileID: 0}
   clickSound: {fileID: 8300000, guid: df85819a08d4343458eaa328c4531117, type: 3}
   loopHoverSound: 1
   isFirstSelectedButton: 0
@@ -3712,12 +3707,11 @@ MonoBehaviour:
   playerDeathSound: {fileID: 8300000, guid: fa36074c4aa031841ba0e658ee2c3716, type: 3}
   mainMenuMusic: {fileID: 8300000, guid: 3f49343f4e72533439cf5ecc12c49e7a, type: 3}
   battleMusic: {fileID: 8300000, guid: 9b6fb3a34fc78a14990cd94ed0f91d31, type: 3}
-  buttonHover: {fileID: 0}
   buttonClick: {fileID: 8300000, guid: df85819a08d4343458eaa328c4531117, type: 3}
   scorePointSound: {fileID: 8300000, guid: fa4319f1c0ece2e4197fc62312d60fc1, type: 3}
   globalSfxVolume: 0.8
   globalMusicVolume: 0.5
-  dynamicMusicSpeedScaling: 1
+  dynamicMusicSpeedScaling: 0
 --- !u!4 &1308383192
 Transform:
   m_ObjectHideFlags: 0
@@ -3967,7 +3961,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ButtonScript
   audioSource: {fileID: 1308383190}
-  hoverSound: {fileID: 0}
   clickSound: {fileID: 8300000, guid: df85819a08d4343458eaa328c4531117, type: 3}
   loopHoverSound: 1
   isFirstSelectedButton: 0
@@ -4423,8 +4416,8 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.5882353, g: 0.5882353, b: 0.5882353, a: 1}
-    m_PressedColor: {r: 0.5294118, g: 0.5294118, b: 0.5294118, a: 1}
+    m_HighlightedColor: {r: 0.5294118, g: 0.5294118, b: 0.5294118, a: 1}
+    m_PressedColor: {r: 0.47058824, g: 0.47058824, b: 0.47058824, a: 1}
     m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
@@ -5013,7 +5006,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ButtonScript
   audioSource: {fileID: 1308383190}
-  hoverSound: {fileID: 0}
   clickSound: {fileID: 8300000, guid: df85819a08d4343458eaa328c4531117, type: 3}
   loopHoverSound: 1
   isFirstSelectedButton: 0

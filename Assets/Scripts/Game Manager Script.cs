@@ -3,6 +3,7 @@ using UnityEngine.Audio;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using System.Collections;
 
 public class GameManagerScript : MonoBehaviour
 {
@@ -39,6 +40,8 @@ public class GameManagerScript : MonoBehaviour
     public GameObject[] indicatorPrefabs;
     public Transform canvasTransform;
 
+    private Coroutine selectionCoroutine;
+
     void Awake()
     {
         Instance = this;
@@ -57,10 +60,18 @@ public class GameManagerScript : MonoBehaviour
 
         if (pressedPauseInput)
         {
-            if (currentMenuState != MenuState.None)
-                Resume();
-            else
+            if (currentMenuState == MenuState.None)
+            {
                 Pause();
+            }
+            else if (currentMenuState == MenuState.PauseMenu)
+            {
+                Resume();
+            }
+            else
+            {
+                CloseSubMenu();
+            }
         }
     }
 
@@ -79,14 +90,9 @@ public class GameManagerScript : MonoBehaviour
 
         currentMenuState = newState;
 
-        if (EventSystem.current != null)
+        if (selectionCoroutine != null)
         {
-            EventSystem.current.SetSelectedGameObject(null);
-        }
-
-        if (AudioManagerScript.Instance != null && AudioManagerScript.Instance.buttonHover != null)
-        {
-            AudioManagerScript.Instance.PlaySFX(AudioManagerScript.Instance.buttonHover);
+            StopCoroutine(selectionCoroutine);
         }
 
         switch (currentMenuState)
@@ -122,6 +128,20 @@ public class GameManagerScript : MonoBehaviour
                 Time.timeScale = 0f;
                 if (EventSystem.current != null) EventSystem.current.SetSelectedGameObject(gameOverFirstSelectedButton);
                 break;
+        }
+    }
+
+    private IEnumerator SetFocusNextFrame(GameObject targetButton)
+    {
+        if (EventSystem.current == null) yield break;
+
+        EventSystem.current.SetSelectedGameObject(null);
+
+        yield return null;
+
+        if (targetButton != null)
+        {
+            EventSystem.current.SetSelectedGameObject(targetButton);
         }
     }
 

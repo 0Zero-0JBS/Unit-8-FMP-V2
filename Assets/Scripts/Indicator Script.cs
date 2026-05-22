@@ -29,22 +29,12 @@ public class IndicatorScript : MonoBehaviour
 
     void Update()
     {
-        // Safe Cleanup: Erase the arrow indicator instantly if its target asteroid explodes
-        if (target == null)
-        {
-            Destroy(gameObject);
-            return;
-        }
-
-        // Optimization: Safeguard camera references without causing CPU stutter logs
         if (mainCamera == null) mainCamera = Camera.main;
         if (mainCamera == null) return;
 
-        // FIX: Project calculations strictly to a 2D plane to ignore camera depth offsets (Z = -10)
         Vector2 cameraPlanarPos = new Vector2(mainCamera.transform.position.x, mainCamera.transform.position.y);
         Vector2 targetPlanarPos = new Vector2(target.position.x, target.position.y);
 
-        // Fixed: Swapped costly Camera.main searches with your high-performance mainCamera cache
         Vector2 toPlayer = (cameraPlanarPos - targetPlanarPos).normalized;
         Vector2 movementDir = (targetRb != null) ? targetRb.linearVelocity.normalized : Vector2.zero; // Fixed API call
         float directionDot = Vector2.Dot(toPlayer, movementDir);

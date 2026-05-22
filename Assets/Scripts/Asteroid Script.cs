@@ -14,6 +14,7 @@ public class AsteroidScript : MonoBehaviour
     public Sprite[] sizeSprites;
     private SpriteRenderer spriteRenderer;
     private bool canDespawn = false;
+    private bool isDead = false;
 
     [Header("Indicator Settings")]
     public GameObject indicatorPrefab;
@@ -96,7 +97,8 @@ public class AsteroidScript : MonoBehaviour
 
         if (collision.gameObject.CompareTag("Bullet"))
         {
-            HandleBulletHit(collision.gameObject);
+            TakeDamage(1);
+            Destroy(collision.gameObject);
         }
 
         if (collision.gameObject.CompareTag("Player"))
@@ -110,37 +112,46 @@ public class AsteroidScript : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("Asteroid"))
-        {
-            return;
-        }
+        if (isDead) return;
 
         if (other.CompareTag("Bullet"))
         {
-            HandleBulletHit(other.gameObject); // Call a shared function
+            Destroy(other.gameObject);
+            TakeDamage(1);
         }
     }
 
-    void HandleBulletHit(GameObject bullet)
+    public void TakeDamage(int damageAmount)
     {
-        health--;
-        Destroy(bullet);
+        if (isDead) return;
+        health -= damageAmount;
 
         if (health <= 0)
         {
-            if (ScoreManagerScript.Instance != null)
-                ScoreManagerScript.Instance.AddScore(pointsValue);
-
+            if (ScoreManagerScript.Instance != null) ScoreManagerScript.Instance.AddScore(pointsValue);
             Explode();
         }
         else
         {
+            // Only play hit sounds if it survives the impact damage
+            if (AudioManagerScript.Instance != null)
+            {
+                AudioManagerScript.Instance.PlayAsteroidHit();
+            }
             StartCoroutine(HitFlicker());
         }
     }
 
     void Explode()
     {
+        if (isDead) return;
+        isDead = true;
+
+        if (AudioManagerScript.Instance != null)
+        {
+            AudioManagerScript.Instance.PlayAsteroidExplosion();
+        }
+
         if (size > 1) Split();
         Destroy(gameObject);
     }
@@ -158,7 +169,7 @@ public class AsteroidScript : MonoBehaviour
 
         for (int i = 0; i < 2; i++)
         {
-            Vector3 spawnOffset = Random.insideUnitCircle * 5f;
+            Vector3 spawnOffset = Random.insideUnitCircle.normalized * 1.5f;
 
             GameObject child = Instantiate(asteroidPrefab, transform.position + spawnOffset, transform.rotation);
 
@@ -192,7 +203,7 @@ public class AsteroidScript : MonoBehaviour
         }
     }
 
-    void OnBecameVisible() 
+    void OnBecameVisible()
     {
         if (myIndicator != null)
         {

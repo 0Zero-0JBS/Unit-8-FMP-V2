@@ -33,11 +33,11 @@ public class AudioManagerScript : MonoBehaviour
     public AudioClip mainMenuMusic;
     public AudioClip battleMusic;
 
+    private static float savedMainMenuMusicTime = 0f;
     private static float savedBattleMusicTime = 0f;
     private float thrustVolumeModifier = 1.0f;
 
     [Header("UI Sounds")]
-    public AudioClip buttonHover;
     public AudioClip buttonClick;
     public AudioClip scorePointSound;
 
@@ -55,6 +55,7 @@ public class AudioManagerScript : MonoBehaviour
             Instance = this;
             DontDestroyOnLoad(transform.root.gameObject);
             InitializePool();
+            SceneManager.sceneLoaded += OnSceneLoaded;
         }
         else
         {
@@ -63,48 +64,90 @@ public class AudioManagerScript : MonoBehaviour
         }
     }
 
-    void Start()
+    void OnDestroy()
     {
-        string activeScene = SceneManager.GetActiveScene().name;
-
-        if (musicSource != null)
+        if (Instance == this)
         {
-            musicSource.loop = true;
-            musicSource.volume = globalMusicVolume;
-            musicSource.playOnAwake = false;
+            SceneManager.sceneLoaded -= OnSceneLoaded;
+        }
+        SaveCurrentTrackTime(SceneManager.GetActiveScene().name);
+    }
 
-            if (activeScene == "Level")
+    private void SaveCurrentTrackTime(string currentSceneName)
+    {
+        if (musicSource == null || !musicSource.isPlaying) return;
+
+        if ((currentSceneName == "Main Menu" || currentSceneName == "Tutorial") && musicSource.clip == mainMenuMusic)
+        {
+            savedMainMenuMusicTime = musicSource.time;
+        }
+        else if (currentSceneName == "Level" && musicSource.clip == battleMusic)
+        {
+            savedBattleMusicTime = musicSource.time;
+        }
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        string activeScene = scene.name;
+        cachedSpawner = FindFirstObjectByType<AsteroidSpawnerScript>();
+
+        if (musicSource == null) return;
+
+        if (musicFadeCoroutine != null)
+        {
+            StopCoroutine(musicFadeCoroutine);
+            musicFadeCoroutine = null;
+        }
+
+        musicSource.loop = true;
+        musicSource.playOnAwake = false;
+
+        if (activeScene == "Level")
+        {
+            if (musicSource.clip == mainMenuMusic && musicSource.isPlaying)
             {
-                if (musicSource.isPlaying && musicSource.clip != battleMusic)
-                {
-                    musicSource.Stop();
-                }
-
-                musicSource.clip = battleMusic;
-
-                if (battleMusic != null)
-                {
-                    if (savedBattleMusicTime > 0f && savedBattleMusicTime < battleMusic.length)
-                    {
-                        musicSource.time = savedBattleMusicTime;
-                    }
-                }
-
-                musicSource.Play();
+                savedMainMenuMusicTime = musicSource.time;
             }
-            else if ((activeScene == "Main Menu" || activeScene == "Tutorial") && mainMenuMusic != null)
-            {
-                if (musicSource.clip == mainMenuMusic && musicSource.isPlaying)
-                {
-                    return;
-                }
 
-                musicSource.Stop();
-                musicSource.clip = mainMenuMusic;
+            musicSource.Stop();
+            musicSource.clip = battleMusic;
+            musicSource.volume = globalMusicVolume * thrustVolumeModifier;
+
+            if (battleMusic != null)
+            {
+                if (savedBattleMusicTime > 0f && savedBattleMusicTime < battleMusic.length)
+                {
+                    musicSource.time = savedBattleMusicTime;
+                }
                 musicSource.Play();
             }
         }
-        cachedSpawner = FindFirstObjectByType<AsteroidSpawnerScript>();
+        else if (activeScene == "Main Menu" || activeScene == "Tutorial")
+        {
+            if (musicSource.clip == mainMenuMusic && musicSource.isPlaying)
+            {
+                return;
+            }
+
+            if (musicSource.clip == battleMusic && musicSource.isPlaying)
+            {
+                savedBattleMusicTime = musicSource.time;
+            }
+
+            musicSource.Stop();
+            musicSource.clip = mainMenuMusic;
+            musicSource.volume = globalMusicVolume * thrustVolumeModifier;
+
+            if (mainMenuMusic != null)
+            {
+                if (savedMainMenuMusicTime > 0f && savedMainMenuMusicTime < mainMenuMusic.length)
+                {
+                    musicSource.time = savedMainMenuMusicTime;
+                }
+                musicSource.Play();
+            }
+        }
     }
 
     void Update()
@@ -137,18 +180,10 @@ public class AudioManagerScript : MonoBehaviour
         thrustVolumeModifier = isThrusting ? 1.1f : 0.5f;
     }
 
-    void OnDestroy()
-    {
-        string activeScene = SceneManager.GetActiveScene().name;
-        if (activeScene == "Level" && musicSource != null && musicSource.clip == battleMusic && musicSource.isPlaying)
-        {
-            savedBattleMusicTime = musicSource.time;
-        }
-    }
-
-    public void ResetBattleTimelineMemory()
+    public void ResetAllTimelineMemory()
     {
         savedBattleMusicTime = 0f;
+        savedMainMenuMusicTime = 0f;
     }
 
     private void InitializePool()
@@ -172,11 +207,27 @@ public class AudioManagerScript : MonoBehaviour
 
     private AudioSource GetAvailableAudioSource()
     {
+        AudioSource oldestSource = sfxPool[0];
+        float maxTime = 0f;
+
         for (int i = 0; i < sfxPool.Length; i++)
         {
-            if (sfxPool[i] != null && !sfxPool[i].isPlaying) return sfxPool[i];
+            if (sfxPool[i] == null) continue;
+
+            // Found a genuinely free source
+            if (!sfxPool[i].isPlaying) return sfxPool[i];
+
+            // Track which source has progressed furthest into its track
+            if (sfxPool[i].time > maxTime)
+            {
+                maxTime = sfxPool[i].time;
+                oldestSource = sfxPool[i];
+            }
         }
-        return sfxPool[0];
+
+        // Pool is full, interrupt the oldest playing sound cleanly
+        oldestSource.Stop();
+        return oldestSource;
     }
 
     public void TransitionToMusic(AudioClip newTrack, float fadeDuration = 1.0f)

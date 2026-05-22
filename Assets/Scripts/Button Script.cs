@@ -4,16 +4,13 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(Selectable))]
-public class ButtonScript : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, ISelectHandler, IDeselectHandler
+public class ButtonScript : MonoBehaviour, IPointerEnterHandler
 {
     [Header("Local Audio Settings")]
-    [Tooltip("If unassigned, sounds will route to the Global Audio Manager pool automatically.")]
     public AudioSource audioSource;
-    public AudioClip hoverSound;
     public AudioClip clickSound;
 
     [Header("Hover Loop Configuration")]
-    [Tooltip("Check this if you want the hover sound to loop continuously while highlighted!")]
     public bool loopHoverSound = false;
 
     [Header("Controller Focus Settings")]
@@ -40,11 +37,6 @@ public class ButtonScript : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
         }
     }
 
-    void OnDisable()
-    {
-        StopHoverPlayback();
-    }
-
     private IEnumerator SafeFocusRoutine()
     {
         yield return null;
@@ -57,60 +49,11 @@ public class ButtonScript : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        if (EventSystem.current == null || cachedSelectable == null) return;
+        if (EventSystem.current == null || cachedSelectable == null || !cachedSelectable.interactable) return;
 
-        if (EventSystem.current.currentSelectedGameObject != gameObject && cachedSelectable.interactable)
+        if (Input.GetAxisRaw("Mouse X") != 0 || Input.GetAxisRaw("Mouse Y") != 0)
         {
             EventSystem.current.SetSelectedGameObject(gameObject);
-        }
-    }
-
-    public void OnPointerExit(PointerEventData eventData)
-    {
-        if (EventSystem.current != null && EventSystem.current.currentSelectedGameObject == gameObject)
-        {
-            return;
-        }
-        StopHoverPlayback();
-    }
-
-    public void OnSelect(BaseEventData eventData)
-    {
-        if (isCurrentlyHighlighted) return;
-        isCurrentlyHighlighted = true;
-
-        if (hoverSound != null)
-        {
-            if (loopHoverSound && audioSource != null)
-            {
-                audioSource.clip = hoverSound;
-                audioSource.loop = true;
-
-                if (AudioManagerScript.Instance != null)
-                    audioSource.volume = AudioManagerScript.Instance.globalSfxVolume;
-
-                audioSource.Play();
-            }
-            else
-            {
-                if (audioSource != null) audioSource.PlayOneShot(hoverSound);
-                else if (AudioManagerScript.Instance != null) AudioManagerScript.Instance.PlaySFX(hoverSound);
-            }
-        }
-    }
-
-    public void OnDeselect(BaseEventData eventData)
-    {
-        StopHoverPlayback();
-    }
-
-    private void StopHoverPlayback()
-    {
-        isCurrentlyHighlighted = false;
-        if (audioSource != null && audioSource.clip == hoverSound)
-        {
-            audioSource.Stop();
-            audioSource.loop = false;
         }
     }
 

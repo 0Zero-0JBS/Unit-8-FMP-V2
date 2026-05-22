@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.EventSystems;
 using TMPro;
+using System.Collections;
 
 public class SceneManagerScript : MonoBehaviour
 {
@@ -31,9 +32,10 @@ public class SceneManagerScript : MonoBehaviour
     public TextMeshProUGUI mainMenuHighScoreText;
     public TextMeshProUGUI mainMenuBestTimeText;
 
+    private Coroutine selectionCoroutine;
+
     public void SwitchMenuState(MenuState newState)
     {
-        // Turns off every panel to clear the screen layer entirely
         if (mainMenu != null) mainMenu.SetActive(false);
         if (settingsMenu != null) settingsMenu.SetActive(false);
         if (quitMenu != null) quitMenu.SetActive(false);
@@ -41,12 +43,16 @@ public class SceneManagerScript : MonoBehaviour
 
         currentMenuState = newState;
 
+        if (selectionCoroutine != null)
+        {
+            StopCoroutine(selectionCoroutine);
+        }
+
         if (EventSystem.current != null)
         {
             EventSystem.current.SetSelectedGameObject(null);
         }
 
-        // Turns on ONLY the requested display layout panels
         switch (currentMenuState)
         {
             case MenuState.MainMenu:
@@ -71,33 +77,25 @@ public class SceneManagerScript : MonoBehaviour
         }
     }
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    private IEnumerator SetFocusNextFrame(GameObject targetButton)
+    {
+        if (EventSystem.current == null) yield break;
+
+        // Clear focus first to completely reset the input module state
+        EventSystem.current.SetSelectedGameObject(null);
+
+        yield return null;
+
+        // Apply new focus once the new UI elements are fully active
+        if (targetButton != null)
+        {
+            EventSystem.current.SetSelectedGameObject(targetButton);
+        }
+    }
+
     void Start()
     {
         Time.timeScale = 1f;
-
-        // Get the name of the scene that just loaded
-        string currentSceneName = SceneManager.GetActiveScene().name;
-
-        if (AudioManagerScript.Instance != null)
-        {
-            if (currentSceneName == "Main Menu" || currentSceneName == "Tutorial")
-            {
-                if (AudioManagerScript.Instance.mainMenuMusic != null)
-                {
-                    // TransitionToMusic checks internally if the song is already playing. 
-                    // Because of this, transitioning from Main Menu to Tutorial will NOT restart the song!
-                    AudioManagerScript.Instance.TransitionToMusic(AudioManagerScript.Instance.mainMenuMusic, 0.5f);
-                }
-            }
-            else if (currentSceneName == "Level")
-            {
-                if (AudioManagerScript.Instance.battleMusic != null)
-                {
-                    AudioManagerScript.Instance.TransitionToMusic(AudioManagerScript.Instance.battleMusic, 0.5f);
-                }
-            }
-        }
 
         int savedHigh = PlayerPrefs.GetInt("HighScore", 0);
         if (mainMenuHighScoreText != null) mainMenuHighScoreText.text = "HIGH SCORE: " + savedHigh.ToString("0000");
@@ -128,10 +126,9 @@ public class SceneManagerScript : MonoBehaviour
     public void RestartLevel() => SceneManager.LoadScene("Level");
     public void QuitGame() => Application.Quit();
 
-    // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     public void ResetHighScore()

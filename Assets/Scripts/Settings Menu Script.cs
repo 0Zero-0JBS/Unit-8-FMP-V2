@@ -17,7 +17,6 @@ public class SettingsMenuScript : MonoBehaviour
 
     void Start()
     {
-        // 1. Automatically wire up the D-pad paths and audio focus triggers at runtime
         ConfigureSettingsDpadRows();
         SetupControllerNavigation(musicSlider);
         SetupControllerNavigation(sfxSlider);
@@ -35,27 +34,33 @@ public class SettingsMenuScript : MonoBehaviour
         SetSFXVolume(savedSFX);
     }
 
-    // 2. Programmatically builds your explicit D-pad navigation grid layout
     private void ConfigureSettingsDpadRows()
     {
         if (musicSlider == null || sfxSlider == null || settingsBackButton == null)
             return;
 
+        Navigation backNav = new Navigation { mode = Navigation.Mode.Explicit };
+        backNav.selectOnUp = null;               
+        backNav.selectOnDown = musicSlider;     
+        backNav.selectOnLeft = null;
+        backNav.selectOnRight = null;
+        settingsBackButton.navigation = backNav;
+
         Navigation musicNav = new Navigation { mode = Navigation.Mode.Explicit };
-        musicNav.selectOnDown = sfxSlider;
+        musicNav.selectOnUp = settingsBackButton; 
+        musicNav.selectOnDown = sfxSlider;         
+        musicNav.selectOnLeft = null;
+        musicNav.selectOnRight = null;
         musicSlider.navigation = musicNav;
 
         Navigation sfxNav = new Navigation { mode = Navigation.Mode.Explicit };
-        sfxNav.selectOnUp = musicSlider;
-        sfxNav.selectOnDown = settingsBackButton;
+        sfxNav.selectOnUp = musicSlider;        
+        sfxNav.selectOnDown = null;               
+        sfxNav.selectOnLeft = null;
+        sfxNav.selectOnRight = null;
         sfxSlider.navigation = sfxNav;
-
-        Navigation backNav = new Navigation { mode = Navigation.Mode.Explicit };
-        backNav.selectOnUp = sfxSlider;
-        settingsBackButton.navigation = backNav;
     }
 
-    // 3. Dynamically injects mouse-to-controller sync hooks and acoustic audio triggers
     private void SetupControllerNavigation(Selectable element)
     {
         if (element == null) return;
@@ -66,24 +71,21 @@ public class SettingsMenuScript : MonoBehaviour
         // Mouse hover sync
         EventTrigger.Entry pointerEnter = new EventTrigger.Entry { eventID = EventTriggerType.PointerEnter };
         pointerEnter.callback.AddListener((data) => {
-            if (EventSystem.current != null) EventSystem.current.SetSelectedGameObject(element.gameObject);
+            float mouseX = Input.GetAxisRaw("Mouse X");
+            float mouseY = Input.GetAxisRaw("Mouse Y");
+
+            if (EventSystem.current != null && (Mathf.Abs(mouseX) > 0.05f || Mathf.Abs(mouseY) > 0.05f))
+            {
+                if (EventSystem.current != null) EventSystem.current.SetSelectedGameObject(element.gameObject);
+            }
         });
         trigger.triggers.Add(pointerEnter);
-
-        // Controller focus highlight sound
-        EventTrigger.Entry selectEntry = new EventTrigger.Entry { eventID = EventTriggerType.Select };
-        selectEntry.callback.AddListener((data) => {
-            if (AudioManagerScript.Instance != null && AudioManagerScript.Instance.buttonHover != null)
-                AudioManagerScript.Instance.PlaySFX(AudioManagerScript.Instance.buttonHover);
-        });
-        trigger.triggers.Add(selectEntry);
     }
 
     public void SetMusicVolume(float volume)
     {
         PlayerPrefs.SetFloat("MusicVol", volume);
 
-        // IMPROVEMENT: Synchronise manager baseline with UI changes
         if (AudioManagerScript.Instance != null)
         {
             AudioManagerScript.Instance.globalMusicVolume = volume;
@@ -96,7 +98,6 @@ public class SettingsMenuScript : MonoBehaviour
         if (audioMixer != null)
         {
             float vol = Mathf.Log10(Mathf.Max(volume, 0.0001f)) * 20;
-            // FIX: Targets "MusicVol" parameter instead of overwriting Master
             audioMixer.SetFloat("MusicVol", vol);
         }
         else
@@ -109,7 +110,6 @@ public class SettingsMenuScript : MonoBehaviour
     {
         PlayerPrefs.SetFloat("SFXVol", volume);
 
-        // IMPROVEMENT: Instantly updates global volume values inside active pooled sound channels
         if (AudioManagerScript.Instance != null)
         {
             AudioManagerScript.Instance.globalSfxVolume = volume;

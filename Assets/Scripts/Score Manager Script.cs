@@ -77,8 +77,8 @@ public class ScoreManagerScript : MonoBehaviour
 
     public void UpdateHUD(int lives, int ammo, int maxAmmo, bool reloading)
     {
-        healthText.text = "LIVES: " + lives;
-        ammoText.text = reloading ? "RELOADING..." : $"AMMO: {ammo}/{maxAmmo}";
+        if (healthText != null) healthText.text = "LIVES: " + lives;
+        if (ammoText != null) ammoText.text = reloading ? "RELOADING..." : $"AMMO: {ammo}/{maxAmmo}";
     }
 
     public void StopTimerPermanently()

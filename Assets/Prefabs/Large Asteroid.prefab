@@ -287,3 +287,4 @@ MonoBehaviour:
   asteroidPrefab: {fileID: 7520053810254202491, guid: d78993b634fef3b4e91b73b7228b7dac, type: 3}
   sizeSprites: []
   indicatorPrefab: {fileID: 0}
+  isAChild: 0

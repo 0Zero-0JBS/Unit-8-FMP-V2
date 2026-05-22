@@ -140,14 +140,8 @@ public class PlayerScript : MonoBehaviour
         if (AudioManagerScript.Instance != null)
         {
             bool isApplyingPower = engineForce.sqrMagnitude > 0.01f;
-            AudioManagerScript.Instance.musicSource.volume = isApplyingPower ? 0.6f : 0.2f;
 
-            if (isApplyingPower && !wasMovingLastFrame)
-            {
-                AudioManagerScript.Instance.PlaySFX(AudioManagerScript.Instance.thrustSound);
-            }
-
-            wasMovingLastFrame = isApplyingPower;
+            AudioManagerScript.Instance.SetThrustVolume(isApplyingPower);
         }
     }
 
@@ -186,7 +180,10 @@ public class PlayerScript : MonoBehaviour
         }
 
         currentAmmo--;
-        ScoreManagerScript.Instance.UpdateHUD(lives, currentAmmo, maxAmmo, false);
+        if (ScoreManagerScript.Instance != null)
+        { 
+            ScoreManagerScript.Instance.UpdateHUD(lives, currentAmmo, maxAmmo, false);
+        }
         useLeftCannon = !useLeftCannon;
 
         if (AudioManagerScript.Instance != null)
