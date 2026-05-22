@@ -25,28 +25,6 @@ public class BulletScript : MonoBehaviour
         Destroy(gameObject, lifetime);
     }
 
-    void OnCollisionEnter2D(Collision2D collision)
-    {
-        if (collision.gameObject.CompareTag(targetTag))
-        {
-            AsteroidScript asteroid = collision.gameObject.GetComponent<AsteroidScript>();
-            if (asteroid != null)
-            {
-                asteroid.TakeDamage(1);
-            }
-
-            Destroy(gameObject);
-        }
-        else if (collision.gameObject.CompareTag("Player"))
-        {
-            return;
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
-    }
-
     void OnTriggerEnter2D(Collider2D other)
     {
         if (hasHitSomething) return;

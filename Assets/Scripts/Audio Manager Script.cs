@@ -9,9 +9,11 @@ public class AudioManagerScript : MonoBehaviour
 
     [Header("Audio Configurations")]
     public AudioMixer audioMixer;
+    public AudioMixerGroup musicMixerGroup;
 
     [Header("Audio Sources")]
     public AudioSource musicSource;
+    public AudioSource thrustSource;
 
     [Header("SFX Pooling System")]
     [SerializeField] private int sfxPoolSize = 20;
@@ -178,6 +180,25 @@ public class AudioManagerScript : MonoBehaviour
     public void SetThrustVolume(bool isThrusting)
     {
         thrustVolumeModifier = isThrusting ? 1.1f : 0.5f;
+
+        if (thrustSource != null)
+        {
+            if (isThrusting)
+            {
+                if (!thrustSource.isPlaying)
+                {
+                    thrustSource.clip = thrustSound;
+                    thrustSource.loop = true;
+                    thrustSource.Play();
+                }
+                thrustSource.volume = globalSfxVolume * 0.7f; // Scale it to sit nicely in the mix
+            }
+            else
+            {
+                // Smoothly fade it out or stop it when not moving
+                thrustSource.Stop();
+            }
+        }
     }
 
     public void ResetAllTimelineMemory()
@@ -188,11 +209,26 @@ public class AudioManagerScript : MonoBehaviour
 
     private void InitializePool()
     {
-        sfxPool = new AudioSource[sfxPoolSize];
-
         UnityEngine.Audio.AudioMixerGroup[] sfxGroups = audioMixer != null ? audioMixer.FindMatchingGroups("SFXVol") : null;
         UnityEngine.Audio.AudioMixerGroup targetGroup = (sfxGroups != null && sfxGroups.Length > 0) ? sfxGroups[0] : null;
 
+        if (audioMixer != null && musicMixerGroup != null)
+        {
+            musicSource.outputAudioMixerGroup = musicMixerGroup;
+        }
+        else if (audioMixer != null)
+        {
+            // Fallback if not assigned in inspector
+            AudioMixerGroup[] musicGroups = audioMixer.FindMatchingGroups("MusicVol"); // Change string to match your group name
+            if (musicGroups.Length > 0) musicSource.outputAudioMixerGroup = musicGroups[0];
+        }
+
+        if (audioMixer != null && targetGroup != null && thrustSource != null)
+        {
+            thrustSource.outputAudioMixerGroup = targetGroup;
+        }
+
+        sfxPool = new AudioSource[sfxPoolSize];
         for (int i = 0; i < sfxPoolSize; i++)
         {
             GameObject poolObj = new GameObject($"SFX_Pool_Source_{i}");
@@ -201,6 +237,8 @@ public class AudioManagerScript : MonoBehaviour
             AudioSource source = poolObj.AddComponent<AudioSource>();
             source.ignoreListenerPause = true;
             if (targetGroup != null) source.outputAudioMixerGroup = targetGroup;
+
+            source.volume = globalSfxVolume;
             sfxPool[i] = source;
         }
     }
@@ -287,10 +325,11 @@ public class AudioManagerScript : MonoBehaviour
     public void PlaySFXWithPitch(AudioClip clip, float minPitch = 0.85f, float maxPitch = 1.15f)
     {
         if (clip == null) return;
-
+        
         AudioSource source = GetAvailableAudioSource();
         if (source != null)
         {
+           
             source.clip = clip;
             source.volume = globalSfxVolume;
             source.pitch = Random.Range(minPitch, maxPitch);

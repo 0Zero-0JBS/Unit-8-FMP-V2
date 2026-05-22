@@ -41,8 +41,8 @@ public class ScoreManagerScript : MonoBehaviour
         UpdateScoreDisplay();
         UpdateTimerDisplay();
 
-        if (highScoreText != null) highScoreText.text = "";
-        if (bestTimeText != null) bestTimeText.text = "";
+        if (highScoreText != null) highScoreText.gameObject.SetActive(false);
+        if (bestTimeText != null) bestTimeText.gameObject.SetActive(false);
     }
 
     void Update()
@@ -101,15 +101,14 @@ public class ScoreManagerScript : MonoBehaviour
 
         if (highScoreText != null)
         {
+            highScoreText.gameObject.SetActive(true);
             highScoreText.text = "HIGH SCORE: " + highScore.ToString("0000");
         }
 
-        UpdateBestTimeDisplay();
-
-        if (gameOverPanel != null)
+        if (bestTimeText != null)
         {
-            gameOverPanel.SetActive(true);
-            Time.timeScale = 0f;
+            bestTimeText.gameObject.SetActive(true);
+            UpdateBestTimeDisplay();
         }
 
         PlayerPrefs.Save();

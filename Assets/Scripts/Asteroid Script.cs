@@ -166,11 +166,19 @@ public class AsteroidScript : MonoBehaviour
     void Split()
     {
         Vector2 parentDirection = rb.linearVelocity.normalized;
+        if (parentDirection.sqrMagnitude < 0.01f) parentDirection = Vector2.up;
+
+        float spreadAngle = 45f;
 
         for (int i = 0; i < 2; i++)
         {
-            Vector3 spawnOffset = Random.insideUnitCircle.normalized * 1.5f;
+            float currentAngle = i == 0 ? -spreadAngle : spreadAngle;
 
+            float baseAngle = Mathf.Atan2(parentDirection.y, parentDirection.x) * Mathf.Rad2Deg;
+            float finalAngleRad = (baseAngle + currentAngle) * Mathf.Deg2Rad;
+            Vector2 splitDir = new Vector2(Mathf.Cos(finalAngleRad), Mathf.Sin(finalAngleRad)).normalized;
+
+            Vector3 spawnOffset = (Vector3)splitDir * (size * 0.8f);
             GameObject child = Instantiate(asteroidPrefab, transform.position + spawnOffset, transform.rotation);
 
             AsteroidScript script = child.GetComponent<AsteroidScript>();
@@ -180,8 +188,6 @@ public class AsteroidScript : MonoBehaviour
             {
                 script.size = size - 1;
                 script.isAChild = true;
-
-                Vector2 splitDir = (parentDirection + (Vector2)spawnOffset.normalized).normalized;
 
                 float globalSpeedMod = 1f;
                 AsteroidSpawnerScript spawner = FindFirstObjectByType<AsteroidSpawnerScript>();

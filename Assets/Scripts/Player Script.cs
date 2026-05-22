@@ -4,7 +4,7 @@ using UnityEngine;
 public class PlayerScript : MonoBehaviour
 {
     [Header("Movement Settings")]
-    public float rotationSpeed = 250f;
+    public float rotationSpeed = 250f; // Used specifically for gamepad turning fallback
     public float thrustForce = 8f;
     public float reverseForce = 4f;
     public float strafeForce = 6f;
@@ -24,7 +24,7 @@ public class PlayerScript : MonoBehaviour
     private float nextFireTime = 0f;
     private bool useLeftCannon = true;
     private Rigidbody2D rb;
-    private bool wasMovingLastFrame;
+    private Camera mainCamera;
 
     [Header("Lives & Respawn")]
     public int lives = 3;
@@ -33,12 +33,23 @@ public class PlayerScript : MonoBehaviour
     private SpriteRenderer spriteRenderer;
     private Collider2D playerCollider;
 
+    // Unified physics storage variables
+    private float inputStrafe = 0f;
+    private float inputThrustForward = 0f;
+    private float inputThrustReverse = 0f;
+
+    // Rotation tracking variables
+    private Vector2 gamepadLookDirection = Vector2.zero;
+    private bool isUsingGamepad = false;
+    private float targetAngle = 0f;
+
     void Awake()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
         playerCollider = GetComponent<Collider2D>();
         rb = GetComponent<Rigidbody2D>();
         currentAmmo = maxAmmo;
+        mainCamera = Camera.main;
     }
 
     void Start()
@@ -51,24 +62,48 @@ public class PlayerScript : MonoBehaviour
         {
             ScoreManagerScript.Instance.UpdateHUD(lives, currentAmmo, maxAmmo, false);
         }
-        else
-        {
-            Debug.LogWarning("PlayerScript couldn't find ScoreManagerScript during Start!");
-        }
     }
 
     void Update()
     {
-        // Manual Reload trigger
-        if ((Input.GetKeyDown(KeyCode.R) || Input.GetButtonDown("Fire2")) && currentAmmo < maxAmmo && !isReloading)
+        inputStrafe = Input.GetAxisRaw("Horizontal");
+        float verticalInput = Input.GetAxisRaw("Vertical");
+
+        inputThrustForward = verticalInput > 0 ? verticalInput : 0f;
+        inputThrustReverse = verticalInput < 0 ? Mathf.Abs(verticalInput) : 0f;
+
+        float rightStickX = 0f;
+        float rightStickY = 0f;
+
+        try
         {
-            StartCoroutine(Reload());
+            rightStickX = Input.GetAxis("RightStickX");
+            rightStickY = Input.GetAxis("RightStickY");
+        }
+        catch (System.ArgumentException)
+        {
+            // Safeguard if project settings are missing the axes
         }
 
-        float rightTrigger = Input.GetAxis("RightTriggerFire");
+        Vector2 rightStickInput = new Vector2(rightStickX, rightStickY);
 
-        // Only shoot if not reloading
-        if ((Input.GetMouseButton(0) || Input.GetButton("Fire1") || rightTrigger > 0.1f) && !isReloading)
+        // Detect device based on current input activity
+        if (rightStickInput.sqrMagnitude > 0.1f)
+        {
+            isUsingGamepad = true;
+            gamepadLookDirection = rightStickInput;
+        }
+        else if (Input.GetAxisRaw("Mouse X") != 0 || Input.GetAxisRaw("Mouse Y") != 0)
+        {
+            isUsingGamepad = false;
+        }
+
+        float rightTrigger = 0f;
+        try { rightTrigger = Input.GetAxis("RightTriggerFire"); } catch { }
+
+        bool shootingInputPressed = Input.GetMouseButton(0) || Input.GetButton("Fire1") || rightTrigger > 0.1f;
+
+        if (shootingInputPressed && !isReloading)
         {
             if (Time.time >= nextFireTime)
             {
@@ -84,7 +119,9 @@ public class PlayerScript : MonoBehaviour
             }
         }
 
-        if (Input.GetButtonDown("Jump") && currentAmmo < maxAmmo && !isReloading)
+        // Manual Reload triggers (R key, Face Button down, or Controller Jump setup)
+        bool reloadButtonPressed = Input.GetKeyDown(KeyCode.R) || Input.GetButtonDown("Fire2") || Input.GetButtonDown("Jump");
+        if (reloadButtonPressed && currentAmmo < maxAmmo && !isReloading)
         {
             StartCoroutine(Reload());
         }
@@ -92,55 +129,49 @@ public class PlayerScript : MonoBehaviour
 
     void FixedUpdate()
     {
-        float leftStickHorizontal = Input.GetAxis("Horizontal");
-        float leftStickVertical = Input.GetAxis("Vertical");
-
-        float rightStickHorizontal = 0f;
-        float rightStickVertical = 0f;
-
-        try
+        if (isUsingGamepad)
         {
-            rightStickHorizontal = Input.GetAxis("RightStickX");
-            rightStickVertical = Input.GetAxis("RightStickY");
+            // Point relative to the angle of the joystick
+            targetAngle = Mathf.Atan2(gamepadLookDirection.y, gamepadLookDirection.x) * Mathf.Rad2Deg - 90f;
+            rb.MoveRotation(targetAngle);
         }
-        catch (System.ArgumentException)
+        else if (mainCamera != null)
         {
-            Debug.LogWarning("Input Axis 'RightStickX' or 'RightStickY' is missing in Project Settings!");
-        }
+            // Point relative to mouse pointer positions
+            Vector3 mouseScreenPos = Input.mousePosition;
+            Vector3 mouseWorldPos = mainCamera.ScreenToWorldPoint(new Vector3(mouseScreenPos.x, mouseScreenPos.y, transform.position.z - mainCamera.transform.position.z));
+            Vector2 lookDirection = (Vector2)mouseWorldPos - (Vector2)transform.position;
 
-        bool holdingReverseButton = Input.GetButton("Jump");
-
-        if (leftStickHorizontal != 0)
-        {
-            float rotationAmount = -leftStickHorizontal * rotationSpeed * Time.fixedDeltaTime;
-            rb.MoveRotation(rb.rotation + rotationAmount);
+            targetAngle = Mathf.Atan2(lookDirection.y, lookDirection.x) * Mathf.Rad2Deg - 90f;
+            rb.MoveRotation(targetAngle);
         }
 
         Vector2 engineForce = Vector2.zero;
 
-        if (holdingReverseButton)
+        // Forward
+        if (inputThrustForward > 0)
         {
-            engineForce += (Vector2)transform.up * -1f * reverseForce;
+            engineForce += (Vector2)transform.up * inputThrustForward * thrustForce;
         }
 
-        if (leftStickVertical > 0 && !holdingReverseButton)
+        // Reverse (Now correctly sharing the Vertical Axis / S key)
+        if (inputThrustReverse > 0)
         {
-            engineForce += (Vector2)transform.up * leftStickVertical * thrustForce;
+            engineForce += (Vector2)transform.up * -1f * inputThrustReverse * reverseForce;
         }
 
-        // Pushes the ship relative to its own wings, ignoring the left stick
-        if (rightStickHorizontal != 0)
+        // Strafe
+        if (Mathf.Abs(inputStrafe) > 0.01f)
         {
-            // Strafe left/right along your local horizontal wing axis
-            engineForce += (Vector2)transform.right * rightStickHorizontal * strafeForce;
+            engineForce += (Vector2)transform.right * inputStrafe * strafeForce;
         }
 
         rb.AddForce(engineForce);
 
+        // Audio Handler Link
         if (AudioManagerScript.Instance != null)
         {
             bool isApplyingPower = engineForce.sqrMagnitude > 0.01f;
-
             AudioManagerScript.Instance.SetThrustVolume(isApplyingPower);
         }
     }

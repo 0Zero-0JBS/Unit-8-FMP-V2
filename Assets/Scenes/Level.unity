@@ -262,7 +262,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AudioManagerScript
   audioMixer: {fileID: 24100000, guid: d3b6415d484053f46a5d3a1d57e9e10d, type: 2}
+  musicMixerGroup: {fileID: 0}
   musicSource: {fileID: 9891945}
+  thrustSource: {fileID: 0}
   sfxPoolSize: 20
   explosionSound: {fileID: 8300000, guid: 291884181e6693440ac7f87f6b547d97, type: 3}
   hitSound: {fileID: 8300000, guid: 5cc6bc51d026d4c4cb772e2b853fdecb, type: 3}
@@ -4099,8 +4101,6 @@ RectTransform:
   - {fileID: 1911480357}
   - {fileID: 933274464}
   - {fileID: 818679873}
-  - {fileID: 1852402765}
-  - {fileID: 927035711}
   - {fileID: 1424117075}
   - {fileID: 1797099209}
   - {fileID: 1329133887}
@@ -4138,12 +4138,12 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 927035710}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 925423340}
+  m_Father: {fileID: 1329133887}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -5274,6 +5274,8 @@ RectTransform:
   - {fileID: 2137037831}
   - {fileID: 1513175432}
   - {fileID: 52645985}
+  - {fileID: 1852402765}
+  - {fileID: 927035711}
   m_Father: {fileID: 925423340}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -7925,7 +7927,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 925423340}
+  m_Father: {fileID: 1329133887}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
